@@ -7,10 +7,11 @@ import (
 	"strings"
 )
 
-var commandMap = map[string]cliCommand {}
+var commandMenu = map[string]cliCommand {}
+var config = cliConfig{next: nil, previous: nil}
 
 func main() {
-	commandMap = map[string]cliCommand {
+	commandMenu = map[string]cliCommand {
 		"exit": {
 			name: "exit",
 			description: "Exit the Pokedex",
@@ -21,6 +22,16 @@ func main() {
 			description: "Displays a help message",
 			callback: commandHelp,
 		},
+		"map": {
+			name: "map",
+			description: "Displays the next 20 location areas",
+			callback: commandMap,
+		},
+		"mapb": {
+			name: "mapb",
+			description: "Displays the previous 20 location areas",
+			callback: commandMapBack,
+		},
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -30,13 +41,13 @@ func main() {
 		scanner.Scan()
 		input := cleanInput(scanner.Text())
 
-		command, ok := commandMap[input[0]]
+		command, ok := commandMenu[input[0]]
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
 		}
 
-		if err := command.callback(); err != nil {
+		if err := command.callback(&config); err != nil {
 			fmt.Println(err)
 		}
 	}
