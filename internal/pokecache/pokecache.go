@@ -52,14 +52,14 @@ func (cache *Cache) reapLoop(interval time.Duration) {
 	defer ticker.Stop()
 	
 	go func() {
-		for {
+		for range ticker.C {
 			cache.mux.Lock()
-			defer cache.mux.Unlock()
 			for key, val := range cache.entries {
-				if time.Now().Sub(val.createdAt) > interval {
+				if time.Since(val.createdAt) > interval {
 					delete(cache.entries, key)
 				} 
 			}
+			cache.mux.Unlock()
 		}
 	}()
 }

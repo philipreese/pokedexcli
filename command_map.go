@@ -7,19 +7,19 @@ import (
 	"github.com/philipreese/pokedexcli/internal/pokeapi"
 )
 
-func commandMap(config *cliConfig) error {
-	return handleLocationArea(config, true)
+func commandMap(config *cliConfig, args ...string) error {
+	return handleLocationAreas(config, true)
 }
 
-func commandMapBack(config *cliConfig) error {
+func commandMapBack(config *cliConfig, args ...string) error {
 	if config.previousLocationsURL == nil {
 		return errors.New("you're on the first page")
 	}
 	
-	return handleLocationArea(config, false)
+	return handleLocationAreas(config, false)
 }
 
-func handleLocationArea(config *cliConfig, next bool) error {
+func handleLocationAreas(config *cliConfig, next bool) error {
 	var url *string
 	if next {
 		url = config.nextLocationsURL
