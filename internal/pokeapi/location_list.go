@@ -10,18 +10,32 @@ func GetLocationAreas(pageURL *string) (LocationAreas, error) {
 	if pageURL != nil {
 		url = *pageURL
 	}
-	
-	res, err := http.Get(url)
+
+	var locationAreas LocationAreas
+
+	val, exists := cache.Get(url)
+	if !exists {
+		res, err := http.Get(url)
+		if err != nil {
+			return LocationAreas{}, err
+		}
+		defer res.Body.Close()
+
+		decoder := json.NewDecoder(res.Body)
+		err = decoder.Decode(&locationAreas)
+		if err != nil {
+			return LocationAreas{}, err
+		}
+
+		val, err = json.Marshal(&locationAreas)
+		if err == nil {
+			cache.Add(url, val)
+		}
+	}
+
+	err := json.Unmarshal(val, &locationAreas)
 	if err != nil {
 		return LocationAreas{}, err
 	}
-	defer res.Body.Close()
-
-	var locationAreas LocationAreas
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&locationAreas); err != nil {
-		return LocationAreas{}, err
-	}
-
 	return locationAreas, nil
 }
