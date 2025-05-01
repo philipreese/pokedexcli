@@ -5,5 +5,5 @@ import (
 )
 
 const baseURL = "https://pokeapi.co/api/v2" 
-
 var cache = pokecache.NewCache(5)
+

@@ -5,36 +5,36 @@ import (
 	"net/http"
 )
 
-func GetLocation(locationName string) (LocationArea, error) {
+func GetLocation(locationName string) (Location, error) {
 	url := baseURL + "/location-area/" + locationName
 
-	var locationArea LocationArea
+	var location Location
 
 	val, exists := cache.Get(url)
 	if !exists {
 		res, err := http.Get(url)
 		if err != nil {
-			return LocationArea{}, err
+			return Location{}, err
 		}
 		defer res.Body.Close()
 
 		decoder := json.NewDecoder(res.Body)
-		err = decoder.Decode(&locationArea)
+		err = decoder.Decode(&location)
 		if err != nil {
-			return LocationArea{}, err
+			return Location{}, err
 		}
 
-		val, err = json.Marshal(&locationArea)
+		val, err = json.Marshal(&location)
 		if err != nil {
-			return LocationArea{}, err
+			return Location{}, err
 		}
 
 		cache.Add(url, val)
 	}
 
-	err := json.Unmarshal(val, &locationArea)
+	err := json.Unmarshal(val, &location)
 	if err != nil {
-		return LocationArea{}, err
+		return Location{}, err
 	}
-	return locationArea, nil
+	return location, nil
 }
