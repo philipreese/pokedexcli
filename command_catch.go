@@ -24,8 +24,10 @@ func commandCatch(config *cliConfig, args ...string) error {
 
 	minExp := 36
 	maxExp := 608
-	difficulty := float64(pokemon.BaseExperience - minExp) / float64(maxExp - minExp)
-	catchProbability := 0.6 - difficulty
+	minProb := 0.7
+	maxProb := 0.05
+	interpolationFactor := float64(pokemon.BaseExperience - minExp) / float64(maxExp - minExp)
+	catchProbability := minProb + (maxProb - minProb)*interpolationFactor
 	
 	if rand.Float64() < catchProbability {
 		fmt.Printf("%s was caught!\n", pokemonName)
