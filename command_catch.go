@@ -31,6 +31,7 @@ func commandCatch(config *cliConfig, args ...string) error {
 	
 	if rand.Float64() < catchProbability {
 		fmt.Printf("%s was caught!\n", pokemonName)
+		fmt.Println("You may now inspect it with the inspect command.")
 		config.pokedex[pokemonName] = pokemon
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonName)
